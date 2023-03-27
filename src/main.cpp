@@ -7,10 +7,20 @@
  */
 
 #include "MIDIUSB.h"
+#include <map>
 
-#define MOSFET_PIN 7
+// Sets pins for instruments
+#define INSTRUMENT_1 7
+#define INSTRUMENT_2 8
+#define INSTRUMENT_3 9
+#define INSTRUMENT_4 10
 
-#define DRUM_NOTE 0x24
+// Associates MIDI input with pin
+const map<int, byte> map = {
+    {INSTRUMENT_1, 0x24},
+    {INSTRUMENT_2, 0x25},
+    {INSTRUMENT_3, 0x26},
+    {INSTRUMENT_4, 0x27}}
 
 // First parameter is the event type (0x09 = note on, 0x08 = note off).
 // Second parameter is note-on/note-off, combined with the channel.
@@ -18,7 +28,8 @@
 // Third parameter is the note number (48 = middle C).
 // Fourth parameter is the velocity (64 = normal, 127 = fastest).
 
-void noteOn(byte channel, byte pitch, byte velocity)
+void
+noteOn(byte channel, byte pitch, byte velocity)
 {
   midiEventPacket_t noteOn = {0x09, 0x90 | channel, pitch, velocity};
   MidiUSB.sendMIDI(noteOn);
@@ -34,7 +45,10 @@ void setup()
 {
   Serial.begin(115200);
 
-  pinMode(MOSFET_PIN, OUTPUT);
+  pinMode(INSTRUMENT_1, OUTPUT);
+  pinMode(INSTRUMENT_2, OUTPUT);
+  pinMode(INSTRUMENT_3, OUTPUT);
+  pinMode(INSTRUMENT_4, OUTPUT);
 }
 
 // First parameter is the event type (0x0B = control change).
@@ -48,17 +62,58 @@ void controlChange(byte channel, byte control, byte value)
   MidiUSB.sendMIDI(event);
 }
 
-void midiToPin(midiEventPacket_t received){
-  switch(received.byte2){
-    case DRUM_NOTE:
-      Serial.println("Activating MOSFET");
-      if(received.byte3 != 0){
-        digitalWrite(MOSFET_PIN, HIGH);
-      }
-      else{
-        digitalWrite(MOSFET_PIN, LOW);
-      }
-      break;
+void midiToPin(midiEventPacket_t received)
+{
+  switch (received.byte2)
+  {
+  case map[INSTRUMENT_1]:
+    if (received.byte3 != 0)
+    {
+      Serial.println("Activating Instrument 1");
+      digitalWrite(INSTRUMENT_1, HIGH);
+    }
+    else
+    {
+      Serial.println("Deactivating Instrument 1");
+      digitalWrite(INSTRUMENT_1, LOW);
+    }
+    break;
+  case map[INSTRUMENT_2]:
+    if (received.byte3 != 0)
+    {
+      Serial.println("Activating Instrument 2");
+      digitalWrite(INSTRUMENT_2, HIGH);
+    }
+    else
+    {
+      Serial.println("Deactivating Instrument 2");
+      digitalWrite(INSTRUMENT_2, LOW);
+    }
+    break;
+  case map[INSTRUMENT_3]:
+    if (received.byte3 != 0)
+    {
+      Serial.println("Activating Instrument 3");
+      digitalWrite(INSTRUMENT_3, HIGH);
+    }
+    else
+    {
+      Serial.println("Deactivating Instrument 3");
+      digitalWrite(INSTRUMENT_3, LOW);
+    }
+    break;
+  case map[INSTRUMENT_4]:
+    if (received.byte3 != 0)
+    {
+      Serial.println("Activating Instrument 4");
+      digitalWrite(INSTRUMENT_4, HIGH);
+    }
+    else
+    {
+      Serial.println("Deactivating Instrument 4");
+      digitalWrite(INSTRUMENT_4, LOW);
+    }
+    break;
   }
 }
 
