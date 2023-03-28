@@ -14,7 +14,7 @@
 #define WARN 2
 #define DEBUG 3
 #define ALL 4
-#define DEBUG_LEVEL DEBUG
+#define DEBUG_LEVEL ALL
 
 // Sets pins for instruments
 #define INSTRUMENT_1 7
@@ -69,55 +69,24 @@ void controlChange(byte channel, byte control, byte value)
 
 void midiToPin(midiEventPacket_t received)
 {
+  int state = received.header - 8;
   switch (received.byte2)
   {
   case MIDI_1:
-    if (received.byte3 != 0)
-    {
-      Serial.println("Activating Instrument 1");
-      digitalWrite(INSTRUMENT_1, HIGH);
-    }
-    else
-    {
-      Serial.println("Deactivating Instrument 1");
-      digitalWrite(INSTRUMENT_1, LOW);
-    }
+    Serial.println("Switching Instrument 1");
+    digitalWrite(INSTRUMENT_1, state);
     break;
   case MIDI_2:
-    if (received.byte3 != 0)
-    {
-      Serial.println("Activating Instrument 2");
-      digitalWrite(INSTRUMENT_2, HIGH);
-    }
-    else
-    {
-      Serial.println("Deactivating Instrument 2");
-      digitalWrite(INSTRUMENT_2, LOW);
-    }
+    Serial.println("Switching Instrument 1");
+    digitalWrite(INSTRUMENT_2, state);
     break;
   case MIDI_3:
-    if (received.byte3 != 0)
-    {
-      Serial.println("Activating Instrument 3");
-      digitalWrite(INSTRUMENT_3, HIGH);
-    }
-    else
-    {
-      Serial.println("Deactivating Instrument 3");
-      digitalWrite(INSTRUMENT_3, LOW);
-    }
+    Serial.println("Switching Instrument 1");
+    digitalWrite(INSTRUMENT_3, state);
     break;
   case MIDI_4:
-    if (received.byte3 != 0)
-    {
-      Serial.println("Activating Instrument 4");
-      digitalWrite(INSTRUMENT_4, HIGH);
-    }
-    else
-    {
-      Serial.println("Deactivating Instrument 4");
-      digitalWrite(INSTRUMENT_4, LOW);
-    }
+    Serial.println("Switching Instrument 1");
+    digitalWrite(INSTRUMENT_4, state);
     break;
   }
 }
@@ -143,6 +112,6 @@ void loop()
       }
       // handle tones
       midiToPin(rx);
-    }
+    } 
   } while (rx.header != 0);
 }
