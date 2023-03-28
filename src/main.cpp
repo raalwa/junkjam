@@ -7,7 +7,14 @@
  */
 
 #include "MIDIUSB.h"
-#include <map>
+
+// define debug levels
+#define NONE 0
+#define ERROR 1
+#define WARN 2
+#define DEBUG 3
+#define ALL 4
+#define DEBUG_LEVEL DEBUG
 
 // Sets pins for instruments
 #define INSTRUMENT_1 7
@@ -15,12 +22,11 @@
 #define INSTRUMENT_3 9
 #define INSTRUMENT_4 10
 
-// Associates MIDI input with pin
-const map<int, byte> map = {
-    {INSTRUMENT_1, 0x24},
-    {INSTRUMENT_2, 0x25},
-    {INSTRUMENT_3, 0x26},
-    {INSTRUMENT_4, 0x27}}
+// Associate MIDI input with pin
+#define MIDI_1 0x24
+#define MIDI_2 0x25
+#define MIDI_3 0x26
+#define MIDI_4 0x27
 
 // First parameter is the event type (0x09 = note on, 0x08 = note off).
 // Second parameter is note-on/note-off, combined with the channel.
@@ -28,8 +34,7 @@ const map<int, byte> map = {
 // Third parameter is the note number (48 = middle C).
 // Fourth parameter is the velocity (64 = normal, 127 = fastest).
 
-void
-noteOn(byte channel, byte pitch, byte velocity)
+void noteOn(byte channel, byte pitch, byte velocity)
 {
   midiEventPacket_t noteOn = {0x09, 0x90 | channel, pitch, velocity};
   MidiUSB.sendMIDI(noteOn);
@@ -66,7 +71,7 @@ void midiToPin(midiEventPacket_t received)
 {
   switch (received.byte2)
   {
-  case map[INSTRUMENT_1]:
+  case MIDI_1:
     if (received.byte3 != 0)
     {
       Serial.println("Activating Instrument 1");
@@ -78,7 +83,7 @@ void midiToPin(midiEventPacket_t received)
       digitalWrite(INSTRUMENT_1, LOW);
     }
     break;
-  case map[INSTRUMENT_2]:
+  case MIDI_2:
     if (received.byte3 != 0)
     {
       Serial.println("Activating Instrument 2");
@@ -90,7 +95,7 @@ void midiToPin(midiEventPacket_t received)
       digitalWrite(INSTRUMENT_2, LOW);
     }
     break;
-  case map[INSTRUMENT_3]:
+  case MIDI_3:
     if (received.byte3 != 0)
     {
       Serial.println("Activating Instrument 3");
@@ -102,7 +107,7 @@ void midiToPin(midiEventPacket_t received)
       digitalWrite(INSTRUMENT_3, LOW);
     }
     break;
-  case map[INSTRUMENT_4]:
+  case MIDI_4:
     if (received.byte3 != 0)
     {
       Serial.println("Activating Instrument 4");
@@ -125,15 +130,17 @@ void loop()
     rx = MidiUSB.read();
     if (rx.header != 0)
     {
-      Serial.print("Received: ");
-      Serial.print(rx.header, HEX);
-      Serial.print("-");
-      Serial.print(rx.byte1, HEX);
-      Serial.print("-");
-      Serial.print(rx.byte2, HEX);
-      Serial.print("-");
-      Serial.println(rx.byte3, HEX);
-
+      if (DEBUG_LEVEL >= ALL)
+      {
+        Serial.print("Received: ");
+        Serial.print(rx.header, HEX);
+        Serial.print("-");
+        Serial.print(rx.byte1, HEX);
+        Serial.print("-");
+        Serial.print(rx.byte2, HEX);
+        Serial.print("-");
+        Serial.println(rx.byte3, HEX);
+      }
       // handle tones
       midiToPin(rx);
     }
