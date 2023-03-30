@@ -110,7 +110,7 @@ void midiToPin(midiEventPacket_t received)
     {
       Serial.println("Switching Instrument 5");
     }
-    digitalWrite(INSTRUMENT_4, state);
+    digitalWrite(INSTRUMENT_5, state);
     break;
   }
 }
