@@ -14,7 +14,7 @@
 #define WARN 2
 #define DEBUG 3
 #define ALL 4
-#define DEBUG_LEVEL DEBUG
+#define DEBUG_LEVEL ALL
 
 // Set pins for instruments
 #define INSTRUMENT_1 7
@@ -24,11 +24,11 @@
 #define INSTRUMENT_5 11
 
 // Associate MIDI input with pin
-#define MIDI_1 0x1D
-#define MIDI_2 0x1F
-#define MIDI_3 0x21
-#define MIDI_4 0x23
-#define MIDI_5 0x24
+#define MIDI_1 0x40
+#define MIDI_2 0x3C
+#define MIDI_3 0x43
+#define MIDI_4 0x41
+#define MIDI_5 0x3E
 
 // First parameter is the event type (0x09 = note on, 0x08 = note off).
 // Second parameter is note-on/note-off, combined with the channel.
