@@ -14,7 +14,7 @@
 #define WARN 2
 #define DEBUG 3
 #define ALL 4
-#define DEBUG_LEVEL ALL
+#define DEBUG_LEVEL NONE
 
 // Set pins for instruments
 #define INSTRUMENT_1 7
